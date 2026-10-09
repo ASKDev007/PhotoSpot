@@ -1427,10 +1427,71 @@ async function deletePhotowalk(
 /* ─── Search / selection ────────────────────────────────── */
 async function showSelection() {
 
+    const searchText =
+        document
+            .getElementById("searchInput")
+            .value
+            .trim()
+            .toLowerCase();
+
+    const selectedStyle =
+        document
+            .getElementById("styleSelect")
+            .value
+            .toLowerCase();
+
     const locations =
         await fetchAllLocations();
 
-    renderCards(locations);
+    const matchingLocations =
+        locations.filter(location => {
+
+            const matchesStyle =
+                selectedStyle === "" ||
+                location.style
+                    .toLowerCase()
+                    .includes(selectedStyle);
+
+            const searchableFields = [
+                location.name,
+                location.style,
+                location.city,
+                location.description,
+                location.bestTime,
+                location.safety
+            ];
+
+            const matchesSearch =
+                searchText === "" ||
+                searchableFields.some(field =>
+                    String(field ?? "")
+                        .toLowerCase()
+                        .includes(searchText)
+                );
+
+            return matchesStyle && matchesSearch;
+        });
+
+    matchingLocations.sort((a, b) => {
+        const aName =
+            String(a.name ?? "")
+                .toLowerCase()
+                .includes(searchText)
+                ? -1
+                : 1;
+
+        const bName =
+            String(b.name ?? "")
+                .toLowerCase()
+                .includes(searchText)
+                ? -1
+                : 1;
+
+        return aName - bName;
+    });
+
+    renderCards(matchingLocations);
+    markSavedLocations();
 }
 
 
