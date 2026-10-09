@@ -880,6 +880,19 @@ async function togglePhotowalks(
                             : ""
                     }
 
+                    <button
+                        class="action-btn"
+                        onclick="
+                            sharePhotowalk(
+                                event,
+                                ${pw.id},
+                                '${encodeURIComponent(pw.title)}'
+                            )
+                        "
+                    >
+                        Share
+                    </button>
+
                 </div>
 
             </div>
