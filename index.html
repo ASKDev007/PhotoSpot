@@ -343,6 +343,47 @@
 
     </section>
 
+    <div
+        class="floating-search"
+        id="floatingSearch"
+        aria-hidden="true"
+    >
+        <select
+            class="style-select"
+            id="floatingStyleSelect"
+            aria-label="Photography style"
+        >
+            <option value="">Photography Styles</option>
+            <option>Street Photography</option>
+            <option>Landscape Photography</option>
+            <option>Portrait Photography</option>
+            <option>Architecture Photography</option>
+        </select>
+
+        <input
+            class="search-input"
+            type="text"
+            id="floatingSearchInput"
+            placeholder="Search locations..."
+            aria-label="Search locations"
+            onkeydown="if (event.key === 'Enter') runFloatingSearch()"
+        >
+
+        <button
+            class="clear-btn"
+            onclick="clearFloatingSearch()"
+        >
+            Clear
+        </button>
+
+        <button
+            class="search-btn"
+            onclick="runFloatingSearch()"
+        >
+            Search
+        </button>
+    </div>
+
 
     <!-- =====================================================
          Results

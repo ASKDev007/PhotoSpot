@@ -2148,6 +2148,110 @@ function clearSearch() {
 }
 
 
+/* ─── Floating search ───────────────────────────────────── */
+function syncFloatingSearch() {
+
+    const floatingInput =
+        document.getElementById(
+            "floatingSearchInput"
+        );
+
+    const floatingStyle =
+        document.getElementById(
+            "floatingStyleSelect"
+        );
+
+    if (floatingInput) {
+        floatingInput.value =
+            document.getElementById(
+                "searchInput"
+            ).value;
+    }
+
+    if (floatingStyle) {
+        floatingStyle.value =
+            document.getElementById(
+                "styleSelect"
+            ).value;
+    }
+}
+
+
+function runFloatingSearch() {
+
+    document.getElementById(
+        "searchInput"
+    ).value = document.getElementById(
+        "floatingSearchInput"
+    ).value;
+
+    document.getElementById(
+        "styleSelect"
+    ).value = document.getElementById(
+        "floatingStyleSelect"
+    ).value;
+
+    showSelection();
+}
+
+
+function clearFloatingSearch() {
+
+    document.getElementById(
+        "floatingSearchInput"
+    ).value = "";
+
+    document.getElementById(
+        "floatingStyleSelect"
+    ).value = "";
+
+    runFloatingSearch();
+}
+
+
+function setupFloatingSearch() {
+
+    const panel =
+        document.getElementById(
+            "floatingSearch"
+        );
+
+    const mainSearch =
+        document.getElementById(
+            "filterStrip"
+        );
+
+    if (!panel || !mainSearch) return;
+
+    const updateFloatingSearch = () => {
+        const shouldShow =
+            mainSearch.getBoundingClientRect().bottom < 0;
+
+        panel.classList.toggle(
+            "is-visible",
+            shouldShow
+        );
+
+        panel.setAttribute(
+            "aria-hidden",
+            String(!shouldShow)
+        );
+
+        if (shouldShow) {
+            syncFloatingSearch();
+        }
+    };
+
+    window.addEventListener(
+        "scroll",
+        updateFloatingSearch,
+        { passive: true }
+    );
+
+    updateFloatingSearch();
+}
+
+
 /* ─── Refresh token ─────────────────────────────────────── */
 async function refreshToken() {
 
@@ -2214,6 +2318,7 @@ window.addEventListener(
     async () => {
 
         setHeroImage();
+        setupFloatingSearch();
 
         const user =
             localStorage.getItem(
