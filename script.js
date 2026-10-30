@@ -2746,6 +2746,22 @@ async function openItinerary(
                 a.position - b.position
         );
 
+    const shareLocations =
+        orderedRows
+            .map(row =>
+                allLocations.find(
+                    location =>
+                        location.id === row.location_id
+                )
+            )
+            .filter(Boolean)
+            .map(location => ({
+                name: location.name,
+                city: location.city,
+                latitude: location.latitude,
+                longitude: location.longitude
+            }));
+
     const itemsHtml =
         orderedRows
             .map((row, idx) => {
@@ -2795,6 +2811,16 @@ async function openItinerary(
                                 align-items:flex-end;
                             "
                         >
+
+                            <button
+                                class="action-btn"
+                                onclick="window.open(
+                                    'https://www.google.com/maps?q=${loc.latitude},${loc.longitude}',
+                                    '_blank'
+                                )"
+                            >
+                                Map
+                            </button>
 
                             <div
                                 style="
@@ -2868,6 +2894,16 @@ async function openItinerary(
             <span class="results-title">
                 ${escapeHtml(itineraryName)}
             </span>
+
+            <button
+                class="action-btn"
+                onclick="shareItinerary(
+                    '${encodeURIComponent(itineraryName)}',
+                    '${encodeURIComponent(JSON.stringify(shareLocations))}'
+                )"
+            >
+                Share itinerary
+            </button>
         </div>
 
         <div
@@ -2892,6 +2928,57 @@ async function openItinerary(
             ← Back to Trips
         </button>
     `;
+}
+
+
+/* ─── Share itinerary ──────────────────────────────────── */
+async function shareItinerary(
+    encodedName,
+    encodedLocations
+) {
+
+    const name =
+        decodeURIComponent(encodedName);
+
+    const locations =
+        JSON.parse(
+            decodeURIComponent(encodedLocations)
+        );
+
+    const locationList =
+        locations
+            .map((location, index) => {
+                const mapsUrl =
+                    `https://www.google.com/maps?q=${location.latitude},${location.longitude}`;
+
+                return `${index + 1}. ${location.name}, ${location.city}\n${mapsUrl}`;
+            })
+            .join("\n\n");
+
+    const shareText =
+        `My PhotoSpot itinerary: ${name}\n\n${locationList}`;
+
+    if (navigator.share) {
+        try {
+            await navigator.share({
+                title: `PhotoSpot itinerary: ${name}`,
+                text: shareText
+            });
+            return;
+        } catch (error) {
+            if (error.name === "AbortError") return;
+        }
+    }
+
+    if (navigator.clipboard) {
+        await navigator.clipboard.writeText(
+            shareText
+        );
+        alert("Itinerary details and Maps links copied.");
+        return;
+    }
+
+    prompt("Copy your itinerary:", shareText);
 }
 
 
