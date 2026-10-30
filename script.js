@@ -3001,7 +3001,7 @@ async function openItinerary(
             </span>
 
             <button
-                class="action-btn"
+                class="action-btn itinerary-share-btn"
                 onclick="shareItinerary(
                     '${encodeURIComponent(itineraryName)}',
                     '${encodeURIComponent(JSON.stringify(shareLocations))}'
