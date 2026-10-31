@@ -295,7 +295,7 @@ function renderCards(matchingLocations) {
     }
 
     document.getElementById("results").innerHTML = `
-        <div class="results-header">
+        <div class="results-header itinerary-header">
             <span class="results-title">Locations</span>
             <span class="results-count">
                 ${matchingLocations.length} found
